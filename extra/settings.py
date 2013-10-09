@@ -17,6 +17,6 @@ class constants:
 
 	SUBSECTIONS = [
 	{u'name':u'dumps', u'type':'growing-dir'},
-	{u'name':u'master-binlogs-rsync', u'type':'growing-dir'},
+	{u'name':u'master-binlogs-rsync', u'type':'changing-dir'},
 	{u'name':u'mysql-replication', u'type':'mysql-replication'},
         ]

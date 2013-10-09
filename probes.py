@@ -131,14 +131,11 @@ class Main:
 		return self.__return_code
 	
 	def __update_status(self,section,subsection,status):
-#		try:
-#			self.__monitoration_array[section][subsection] = status
-#		except (KeyError), ke:
-#			self.__monitoration_array[section] = {subsection: status}
 		self.__monitoration_array[section + '-' + subsection] = int(status)
 
 	def __check(self, section, subsection, info):
 		METHODS = {
+		u'changing-dir': self.__check_changing_dir,
 		u'growing-dir': self.__check_growing_dir,
 		u'mysql-replication': self.__check_mysql_replication,
 		}
@@ -149,7 +146,6 @@ class Main:
 			#TODO Treat invalid and not configured types
 			pass
 		real_check(section,subsection['name'],info)
-#		self.__update_status(section,subsection,True)	
 
 	def __get_time_to_sleep(self,interval):
 		try:
@@ -157,21 +153,27 @@ class Main:
 		except:
 			#Treat invalid interval
 			pass
-
+	
 	def __check_growing_dir(self,section,subsection,info):
-		#print 'growing_dir: %s - %s - TOTAL %i' % (section,str(info),self.__get_dir_size(info['dir']))
+		self.__check_changing_dir(section,subsection,info,growing=True)
+
+	def __check_changing_dir(self,section,subsection,info,growing=False):
 
 		last_size = self.__get_dir_size(info['dir'])
-#		delay = TIME_TO_SLEEP[info[u'check-interval']]
 		delay = self.__get_time_to_sleep(info[u'check-interval'])
-#		print u'Esperar %s para seção %s, subseção %s' % (delay,section,subsection)
 		while True:
 			time.sleep(delay)
 			new_size = self.__get_dir_size(info['dir'])
-			if (new_size - last_size) > int(info[u'threshold']):
-				self.__update_status(section,subsection,True)
+			if growing:
+				if (new_size - last_size) > int(info[u'threshold']):
+					self.__update_status(section,subsection,True)
+				else:
+					self.__update_status(section,subsection,False)
 			else:
-				self.__update_status(section,subsection,False)
+				if new_size != last_size:
+                                        self.__update_status(section,subsection,True)
+                                else:
+                                        self.__update_status(section,subsection,False)
 			last_size = new_size
 			
 		
