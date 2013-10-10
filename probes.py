@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Daemon que lê um arquivo de configuração .INI e faz diversas checagens:
- - Checa o status do backup periódico do banco de dados;
- - Checa o status do backup dos logs binários do servidor MySQL master;
- - Checa o status da réplica do banco de dados.
-Os retornos referente ao probe são servidos via HTTP"""
+"""A daemon that does several probing based on a configuration .INI:
+ - Checks the status of periodic backups;
+ - Checks whether binlogs of a master MySQL server are being rsynced;
+ - Checks if MySQL replication is up and running.
+The daemon serves those statuses through HTTP on JSon format"""
 
 from optparse import OptionParser
 from configobj import ConfigObj, ConfigObjError, Section
@@ -22,13 +22,11 @@ import MySQLdb
 import simplejson as json
 
 __author__ = "Edgard Mota de Oliveira"
-__copyright__ = "Copyright 2013, BoaCompra UOL"
 __credits__ = ["Edgard Mota de Oliveira", "Marcelo Henrique Gonçalves (tqi_mhgoncalves@uolinc.com)"]
-__license__ = "Proprietária"
 __version__ = "0.0.1"
 __maintainer__ = "Edgard Mota de Oliveira"
 __email__ = "emota@uolinc.com"
-__status__ = "Desenvolvimento"
+__status__ = "Beta Testing"
 
 class Main:
 
